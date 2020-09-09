@@ -23,8 +23,10 @@ const scoreLower: string[] = [
   "Chance",
 ];
 
+const emptyDice: string =
+  "https://upload.wikimedia.org/wikipedia/commons/9/99/Dice-0.svg";
+
 const dice: string[] = [
-  "https://upload.wikimedia.org/wikipedia/commons/9/99/Dice-0.svg",
   "https://upload.wikimedia.org/wikipedia/commons/1/1b/Dice-1-b.svg",
   "https://upload.wikimedia.org/wikipedia/commons/5/5f/Dice-2-b.svg",
   "https://upload.wikimedia.org/wikipedia/commons/b/b1/Dice-3-b.svg",
@@ -34,11 +36,56 @@ const dice: string[] = [
 ];
 
 const App: React.FC = () => {
-  const [place1, setPlace1] = useState(0);
-  const [place2, setPlace2] = useState(0);
-  const [place3, setPlace3] = useState(0);
-  const [place4, setPlace4] = useState(0);
-  const [place5, setPlace5] = useState(0);
+  const [place1, setPlace1] = useState({
+    dice: emptyDice,
+    locked: false,
+    location: 1,
+  });
+  const [place2, setPlace2] = useState({
+    dice: emptyDice,
+    locked: false,
+    location: 2,
+  });
+  const [place3, setPlace3] = useState({
+    dice: emptyDice,
+    locked: false,
+    location: 3,
+  });
+  const [place4, setPlace4] = useState({
+    dice: emptyDice,
+    locked: false,
+    location: 4,
+  });
+  const [place5, setPlace5] = useState({
+    dice: emptyDice,
+    locked: false,
+    location: 5,
+  });
+
+  const rollDice = () => {
+    setPlace1({
+      ...place1,
+      dice: dice[Math.floor(Math.random() * dice.length)],
+    });
+    setPlace2({
+      ...place2,
+      dice: dice[Math.floor(Math.random() * dice.length)],
+    });
+    setPlace3({
+      ...place3,
+      dice: dice[Math.floor(Math.random() * dice.length)],
+    });
+    setPlace4({
+      ...place4,
+      dice: dice[Math.floor(Math.random() * dice.length)],
+    });
+    setPlace5({
+      ...place5,
+      dice: dice[Math.floor(Math.random() * dice.length)],
+    });
+  };
+
+  const keepOrRelease = (place: number) => {};
 
   return (
     <div className="App">
@@ -46,12 +93,12 @@ const App: React.FC = () => {
       <ul>
         {" "}
         {/*Upper section: needs total and added bonus (35) if total > 63*/}
-        {scoreUpper.map((score) => {
-          return <li>{score}</li>;
+        {scoreUpper.map((score, index) => {
+          return <li key={index}>{score}</li>;
         })}
         {/*Lower section: needs total, total of upper section and grand total*/}
-        {scoreLower.map((score) => {
-          return <li>{score}</li>;
+        {scoreLower.map((score, index) => {
+          return <li key={index}>{score}</li>;
         })}
       </ul>
       <p>Upper section total:</p>
@@ -61,15 +108,27 @@ const App: React.FC = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr 1fr",
+          gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
         }}
       >
-        {dice.map((onedice) => {
-          return <Dice dices={onedice} />;
-        })}
+        <Dice onedice={place1} callback={keepOrRelease} />
+        <Dice onedice={place2} callback={keepOrRelease} />
+        <Dice onedice={place3} callback={keepOrRelease} />
+        <Dice onedice={place4} callback={keepOrRelease} />
+        <Dice onedice={place5} callback={keepOrRelease} />
       </div>
+      {/* <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr",
+        }}
+      >
+        {dice.map((one) => {
+          return <Dice onedice={one} />;
+        })}
+      </div> */}
 
-      <Button variant="contained" color="primary">
+      <Button variant="contained" onClick={rollDice}>
         Roll
       </Button>
     </div>
