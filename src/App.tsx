@@ -189,33 +189,52 @@ const App: React.FC = () => {
   const calculateSimpleSubtotal = (array: number[], number: number): number => {
     return array.filter((score) => score === number).length * number;
   };
+  const unique = (value: any, index: number, self: any) => {
+    return self.indexOf(value) === index;
+  };
+  const sumOfAllValues = (array: number[]) => {
+    return array.reduce((a, b) => a + b);
+  };
   const addToTotal = (score: ScoreModel, subscore: number[]): void => {
-    if (score.simpleCalculation) {
-      if (score.title === "Ones") {
-        const subTot = calculateSimpleSubtotal(subscore, 1);
-        setTotalscore(totalscore + subTot);
-      }
-      if (score.title === "Twos") {
-        const subTot = calculateSimpleSubtotal(subscore, 2);
-        setTotalscore(totalscore + subTot);
-      }
-      if (score.title === "Threes") {
-        const subTot = calculateSimpleSubtotal(subscore, 3);
-        setTotalscore(totalscore + subTot);
-      }
-      if (score.title === "Fours") {
-        const subTot = calculateSimpleSubtotal(subscore, 4);
-        setTotalscore(totalscore + subTot);
-      }
-      if (score.title === "Fives") {
-        const subTot = calculateSimpleSubtotal(subscore, 5);
-        setTotalscore(totalscore + subTot);
-      }
-      if (score.title === "Sixes") {
-        const subTot = calculateSimpleSubtotal(subscore, 6);
-        setTotalscore(totalscore + subTot);
-      }
+    if (score.title === "Ones" && subscore.includes(1)) {
+      const subTot = calculateSimpleSubtotal(subscore, 1);
+      setTotalscore(totalscore + subTot);
     }
+    if (score.title === "Twos" && subscore.includes(2)) {
+      const subTot = calculateSimpleSubtotal(subscore, 2);
+      setTotalscore(totalscore + subTot);
+    }
+    if (score.title === "Threes" && subscore.includes(3)) {
+      const subTot = calculateSimpleSubtotal(subscore, 3);
+      setTotalscore(totalscore + subTot);
+    }
+    if (score.title === "Fours" && subscore.includes(4)) {
+      const subTot = calculateSimpleSubtotal(subscore, 4);
+      setTotalscore(totalscore + subTot);
+    }
+    if (score.title === "Fives" && subscore.includes(5)) {
+      const subTot = calculateSimpleSubtotal(subscore, 5);
+      setTotalscore(totalscore + subTot);
+    }
+    if (score.title === "Sixes" && subscore.includes(6)) {
+      const subTot = calculateSimpleSubtotal(subscore, 6);
+      setTotalscore(totalscore + subTot);
+    }
+    //Have to fix this, will work with [2, 2, 3, 3, 1] and should not
+    if (score.title === "3 of a kind" && subscore.filter(unique).length < 4) {
+      const subTot = sumOfAllValues(subscore);
+      setTotalscore(totalscore + subTot);
+    }
+    if (score.title === "4 of a kind" && subscore.filter(unique).length < 3) {
+      const subTot = sumOfAllValues(subscore);
+      setTotalscore(totalscore + subTot);
+    }
+    //Have to fix this, willwork with [1, 2, 2, 2, 2] and should not
+    if (score.title === "4 of a kind" && subscore.filter(unique).length < 3) {
+      const subTot = sumOfAllValues(subscore);
+      setTotalscore(totalscore + subTot);
+    }
+    //TODO: small straight, large straight, yahtzee, chance
     const newScoreStatus = [
       ...scoreStatus.map((item) => {
         if (item.title === score.title) {
@@ -227,6 +246,7 @@ const App: React.FC = () => {
     ];
     setScoreStatus(newScoreStatus);
     setThrows(0);
+    setDiceStatus(initialDiceState);
   };
 
   /*Lower section: needs total, total of upper section and grand total*/
