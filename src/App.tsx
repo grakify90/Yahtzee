@@ -1,136 +1,284 @@
 import React, { useState } from "react";
 import "./App.css";
 import { Dice } from "./components/Dice";
+import { Score } from "./components/Score";
 import { Button } from "@material-ui/core";
 import Yahtzeelogo from "./images/YAHTZEE.png";
+import { DiceModel } from "./models/dice.model";
+import { ScoreModel } from "./models/score.model";
 
-const scoreUpper: string[] = [
-  "Ones",
-  "Twos",
-  "Threes",
-  "Fours",
-  "Fives",
-  "Sixes",
-];
-
-const scoreLower: string[] = [
-  "3 of a kind",
-  "4 of a kind",
-  "Full House",
-  "Small straight",
-  "Large straight",
-  "YAHTZEE",
-  "Chance",
-];
+type OneDice = {
+  value: number;
+  image: string;
+};
 
 const emptyDice: string =
   "https://upload.wikimedia.org/wikipedia/commons/9/99/Dice-0.svg";
 
-const dice: string[] = [
-  "https://upload.wikimedia.org/wikipedia/commons/1/1b/Dice-1-b.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/5/5f/Dice-2-b.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/b/b1/Dice-3-b.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/f/fd/Dice-4-b.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/0/08/Dice-5-b.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/2/26/Dice-6-b.svg",
+const totalDice: OneDice[] = [
+  {
+    value: 1,
+    image: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Dice-1-b.svg",
+  },
+  {
+    value: 2,
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Dice-2-b.svg",
+  },
+  {
+    value: 3,
+    image: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Dice-3-b.svg",
+  },
+  {
+    value: 4,
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Dice-4-b.svg",
+  },
+  {
+    value: 5,
+    image: "https://upload.wikimedia.org/wikipedia/commons/0/08/Dice-5-b.svg",
+  },
+  {
+    value: 6,
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/26/Dice-6-b.svg",
+  },
+];
+
+const initialDiceState = [
+  {
+    dice: emptyDice,
+    value: 0,
+    locked: false,
+    location: 1,
+  },
+  {
+    dice: emptyDice,
+    value: 0,
+    locked: false,
+    location: 2,
+  },
+  {
+    dice: emptyDice,
+    value: 0,
+    locked: false,
+    location: 3,
+  },
+  {
+    dice: emptyDice,
+    value: 0,
+    locked: false,
+    location: 4,
+  },
+  {
+    dice: emptyDice,
+    value: 0,
+    locked: false,
+    location: 5,
+  },
+];
+const initialScoreState = [
+  {
+    title: "Ones",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "Twos",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "Threes",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "Fours",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "Fives",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "Sixes",
+    locked: false,
+    simpleCalculation: true,
+  },
+  {
+    title: "3 of a kind",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "4 of a kind",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "Full House",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "Small straight",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "Large straight",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "YAHTZEE",
+    locked: false,
+    simpleCalculation: false,
+  },
+  {
+    title: "Chance",
+    locked: false,
+    simpleCalculation: true,
+  },
 ];
 
 const App: React.FC = () => {
-  const [place1, setPlace1] = useState({
-    dice: emptyDice,
-    locked: false,
-    location: 1,
-  });
-  const [place2, setPlace2] = useState({
-    dice: emptyDice,
-    locked: false,
-    location: 2,
-  });
-  const [place3, setPlace3] = useState({
-    dice: emptyDice,
-    locked: false,
-    location: 3,
-  });
-  const [place4, setPlace4] = useState({
-    dice: emptyDice,
-    locked: false,
-    location: 4,
-  });
-  const [place5, setPlace5] = useState({
-    dice: emptyDice,
-    locked: false,
-    location: 5,
-  });
+  const [diceStatus, setDiceStatus] = useState<DiceModel[]>(initialDiceState);
+  const [scoreStatus, setScoreStatus] = useState<ScoreModel[]>(
+    initialScoreState
+  );
+  const [throws, setThrows] = useState<number>(0);
+  const [subscore, setSubscore] = useState<number[]>([]);
+  const [totalscore, setTotalscore] = useState<number>(0);
 
   const rollDice = () => {
-    setPlace1({
-      ...place1,
-      dice: dice[Math.floor(Math.random() * dice.length)],
-    });
-    setPlace2({
-      ...place2,
-      dice: dice[Math.floor(Math.random() * dice.length)],
-    });
-    setPlace3({
-      ...place3,
-      dice: dice[Math.floor(Math.random() * dice.length)],
-    });
-    setPlace4({
-      ...place4,
-      dice: dice[Math.floor(Math.random() * dice.length)],
-    });
-    setPlace5({
-      ...place5,
-      dice: dice[Math.floor(Math.random() * dice.length)],
-    });
+    setThrows(throws + 1);
+    const newStatus = [
+      ...diceStatus.map((dice) => {
+        const randomDice =
+          totalDice[Math.floor(Math.random() * totalDice.length)];
+        if (dice.locked) {
+          return dice;
+        } else {
+          return {
+            ...dice,
+            dice: randomDice.image,
+            value: randomDice.value,
+          };
+        }
+      }),
+    ];
+    setDiceStatus(newStatus);
+    const scoresArray = newStatus.map((score) => score.value);
+    setSubscore([...scoresArray]);
   };
 
-  const keepOrRelease = (place: number) => {};
+  const keepOrRelease = (dice: DiceModel): void => {
+    const newState = [
+      ...diceStatus.map((item) => {
+        if (item.location === dice.location) {
+          return { ...item, locked: !dice.locked };
+        } else {
+          return item;
+        }
+      }),
+    ];
+    setDiceStatus(newState);
+  };
+
+  const calculateSimpleSubtotal = (array: number[], number: number): number => {
+    return array.filter((score) => score === number).length * number;
+  };
+  const addToTotal = (score: ScoreModel, subscore: number[]): void => {
+    if (score.simpleCalculation) {
+      if (score.title === "Ones") {
+        const subTot = calculateSimpleSubtotal(subscore, 1);
+        setTotalscore(totalscore + subTot);
+      }
+      if (score.title === "Twos") {
+        const subTot = calculateSimpleSubtotal(subscore, 2);
+        setTotalscore(totalscore + subTot);
+      }
+      if (score.title === "Threes") {
+        const subTot = calculateSimpleSubtotal(subscore, 3);
+        setTotalscore(totalscore + subTot);
+      }
+      if (score.title === "Fours") {
+        const subTot = calculateSimpleSubtotal(subscore, 4);
+        setTotalscore(totalscore + subTot);
+      }
+      if (score.title === "Fives") {
+        const subTot = calculateSimpleSubtotal(subscore, 5);
+        setTotalscore(totalscore + subTot);
+      }
+      if (score.title === "Sixes") {
+        const subTot = calculateSimpleSubtotal(subscore, 6);
+        setTotalscore(totalscore + subTot);
+      }
+    }
+    const newScoreStatus = [
+      ...scoreStatus.map((item) => {
+        if (item.title === score.title) {
+          return { ...item, locked: true };
+        } else {
+          return item;
+        }
+      }),
+    ];
+    setScoreStatus(newScoreStatus);
+    setThrows(0);
+  };
+
+  /*Lower section: needs total, total of upper section and grand total*/
+  /*Upper section: needs total and added bonus (35) if total > 63*/
 
   return (
     <div className="App">
       <img src={Yahtzeelogo} alt="logo" style={{ maxWidth: "70vw" }} />
-      <ul>
-        {" "}
-        {/*Upper section: needs total and added bonus (35) if total > 63*/}
-        {scoreUpper.map((score, index) => {
-          return <li key={index}>{score}</li>;
-        })}
-        {/*Lower section: needs total, total of upper section and grand total*/}
-        {scoreLower.map((score, index) => {
-          return <li key={index}>{score}</li>;
-        })}
-      </ul>
-      <p>Upper section total:</p>
-      <p>Lower section total:</p>
-      <p>Grand total:</p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-        }}
-      >
-        <Dice onedice={place1} callback={keepOrRelease} />
-        <Dice onedice={place2} callback={keepOrRelease} />
-        <Dice onedice={place3} callback={keepOrRelease} />
-        <Dice onedice={place4} callback={keepOrRelease} />
-        <Dice onedice={place5} callback={keepOrRelease} />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+        {scoreStatus.map((score, index) => {
+          return (
+            <Score
+              key={index}
+              score={score}
+              callback={addToTotal}
+              subscore={subscore}
+            />
+          );
+        })}
       </div>
-      {/* <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr",
-        }}
-      >
-        {dice.map((one) => {
-          return <Dice onedice={one} />;
-        })}
-      </div> */}
+      <p>Grand total:{totalscore}</p>
+      <p>
+        Subscore:{" "}
+        {subscore.map((score, index) => (
+          <span key={index}>{score},</span>
+        ))}
+      </p>
+      {throws > 0 && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
+          }}
+        >
+          {diceStatus.map((dice) => {
+            return (
+              <Dice
+                key={Math.random()}
+                onedice={dice}
+                callback={keepOrRelease}
+              />
+            );
+          })}
+        </div>
+      )}
 
-      <Button variant="contained" onClick={rollDice}>
-        Roll
-      </Button>
+      {throws < 3 && (
+        <Button variant="contained" onClick={rollDice}>
+          Roll the dice
+        </Button>
+      )}
     </div>
   );
 };
