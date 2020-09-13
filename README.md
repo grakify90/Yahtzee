@@ -16,7 +16,7 @@ Who doesn't know Yahtzee, the popular dice game created in the 1940s in Ohio, US
 ## A little preview
 
 This is how the app looks right now (work in progress!)
-![Yahtzee preview](https://github.com/grakify90/Yahtzee/blob/development/Peek%202020-09-10%2012-32.gif)
+![Yahtzee preview](https://github.com/grakify90/Yahtzee/blob/development/Peek%202020-09-13%2017-03.gif)
 
 ## Technologies used
 ✨ _Newly explored technology_
