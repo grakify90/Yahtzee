@@ -121,12 +121,12 @@ const initialScoreState = [
     simpleCalculation: false,
   },
   {
-    title: "Small straight",
+    title: "Small Straight",
     locked: false,
     simpleCalculation: false,
   },
   {
-    title: "Large straight",
+    title: "Large Straight",
     locked: false,
     simpleCalculation: false,
   },
@@ -186,11 +186,66 @@ const App: React.FC = () => {
     setDiceStatus(newState);
   };
 
+  //Game logic
+  //helper functions
   const calculateSimpleSubtotal = (array: number[], number: number): number => {
     return array.filter((score) => score === number).length * number;
   };
-  const unique = (value: any, index: number, self: any) => {
-    return self.indexOf(value) === index;
+  const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b);
+
+  //main function
+  const validateScore = (arr: number[], check: string) => {
+    const countOccurrences = (arr: number[], val: number) =>
+      arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+    var a = [];
+    for (let i = 0; i < arr.length; i++)
+      if (a.indexOf(arr[i]) === -1) {
+        a.push(arr[i]);
+      }
+    // 'a' will contain an array of unique values in subscore array
+    if (check === "3 of a kind") {
+      let occurence = 0;
+      for (let i = 0; i < a.length; i++) {
+        if (countOccurrences(arr, a[i]) > 2) {
+          occurence = occurence + 1;
+        }
+      }
+      return occurence > 0;
+    }
+    if (check === "4 of a kind") {
+      let occurence = 0;
+      for (let i = 0; i < a.length; i++) {
+        if (countOccurrences(arr, a[i]) > 3) {
+          occurence = occurence + 1;
+        }
+      }
+      return occurence > 0;
+    }
+    if (check === "Full House") {
+      let occurence = 0;
+      for (let i = 0; i < a.length; i++) {
+        if (countOccurrences(arr, a[i]) > 2) {
+          occurence = occurence + 1;
+        }
+      }
+      return occurence > 0 && a.length < 3;
+    }
+    if (check === "Small Straight") {
+      arr.sort();
+      if (/1234|2345|3456/.test(arr.join("").replace(/(.)\1/, "$1"))) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (check === "Large Straight") {
+      const sumOfArray = sumArray(subscore);
+      return (a.length === 5 && sumOfArray === 15) || sumOfArray === 20;
+    }
+    if (check === "YAHTZEE") {
+      return a.length === 1;
+    }
+    return;
   };
   const sumOfAllValues = (array: number[]) => {
     return array.reduce((a, b) => a + b);
@@ -220,21 +275,37 @@ const App: React.FC = () => {
       const subTot = calculateSimpleSubtotal(subscore, 6);
       setTotalscore(totalscore + subTot);
     }
-    //Have to fix this, will work with [2, 2, 3, 3, 1] and should not
-    if (score.title === "3 of a kind" && subscore.filter(unique).length < 4) {
+    if (score.title === "3 of a kind" && validateScore(subscore, score.title)) {
       const subTot = sumOfAllValues(subscore);
       setTotalscore(totalscore + subTot);
     }
-    if (score.title === "4 of a kind" && subscore.filter(unique).length < 3) {
+    if (score.title === "4 of a kind" && validateScore(subscore, score.title)) {
       const subTot = sumOfAllValues(subscore);
       setTotalscore(totalscore + subTot);
     }
-    //Have to fix this, willwork with [1, 2, 2, 2, 2] and should not
-    if (score.title === "4 of a kind" && subscore.filter(unique).length < 3) {
-      const subTot = sumOfAllValues(subscore);
+    if (score.title === "Full House" && validateScore(subscore, score.title)) {
+      setTotalscore(totalscore + 25);
+    }
+    if (
+      score.title === "Small Straight" &&
+      validateScore(subscore, score.title)
+    ) {
+      setTotalscore(totalscore + 30);
+    }
+    if (
+      score.title === "Large Straight" &&
+      validateScore(subscore, score.title)
+    ) {
+      setTotalscore(totalscore + 40);
+    }
+    if (score.title === "YAHTZEE" && validateScore(subscore, score.title)) {
+      setTotalscore(totalscore + 50);
+    }
+    if (score.title === "Chance") {
+      const subTot = sumArray(subscore);
       setTotalscore(totalscore + subTot);
     }
-    //TODO: small straight, large straight, yahtzee, chance
+
     const newScoreStatus = [
       ...scoreStatus.map((item) => {
         if (item.title === score.title) {
@@ -256,7 +327,7 @@ const App: React.FC = () => {
     <div className="App">
       <img src={Yahtzeelogo} alt="logo" style={{ maxWidth: "70vw" }} />
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
         {scoreStatus.map((score, index) => {
           return (
             <Score
@@ -269,12 +340,6 @@ const App: React.FC = () => {
         })}
       </div>
       <p>Grand total:{totalscore}</p>
-      <p>
-        Subscore:{" "}
-        {subscore.map((score, index) => (
-          <span key={index}>{score},</span>
-        ))}
-      </p>
       {throws > 0 && (
         <div
           style={{
