@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./App.css";
+import React, { useState, useEffect } from "react";
+import "./App.scss";
 import { Dice } from "./components/Dice";
 import { Score } from "./components/Score";
 import { Button } from "@material-ui/core";
@@ -150,6 +150,7 @@ const App: React.FC = () => {
   const [throws, setThrows] = useState<number>(0);
   const [subscore, setSubscore] = useState<number[]>([]);
   const [totalscore, setTotalscore] = useState<number>(0);
+  const [scoreLock, setScoreLock] = useState<number>(1);
 
   const rollDice = () => {
     setThrows(throws + 1);
@@ -172,6 +173,12 @@ const App: React.FC = () => {
     const scoresArray = newStatus.map((score) => score.value);
     setSubscore([...scoresArray]);
   };
+
+  useEffect(() => {
+    if (throws === 3) {
+      setScoreLock(1);
+    }
+  }, [throws]);
 
   const keepOrRelease = (dice: DiceModel): void => {
     const newState = [
@@ -254,61 +261,75 @@ const App: React.FC = () => {
     if (score.title === "Ones" && subscore.includes(1)) {
       const subTot = calculateSimpleSubtotal(subscore, 1);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Twos" && subscore.includes(2)) {
       const subTot = calculateSimpleSubtotal(subscore, 2);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Threes" && subscore.includes(3)) {
       const subTot = calculateSimpleSubtotal(subscore, 3);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Fours" && subscore.includes(4)) {
       const subTot = calculateSimpleSubtotal(subscore, 4);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Fives" && subscore.includes(5)) {
       const subTot = calculateSimpleSubtotal(subscore, 5);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Sixes" && subscore.includes(6)) {
       const subTot = calculateSimpleSubtotal(subscore, 6);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "3 of a kind" && validateScore(subscore, score.title)) {
       const subTot = sumOfAllValues(subscore);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "4 of a kind" && validateScore(subscore, score.title)) {
       const subTot = sumOfAllValues(subscore);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
     if (score.title === "Full House" && validateScore(subscore, score.title)) {
       setTotalscore(totalscore + 25);
+      setScoreLock(0);
     }
     if (
       score.title === "Small Straight" &&
       validateScore(subscore, score.title)
     ) {
       setTotalscore(totalscore + 30);
+      setScoreLock(0);
     }
     if (
       score.title === "Large Straight" &&
       validateScore(subscore, score.title)
     ) {
       setTotalscore(totalscore + 40);
+      setScoreLock(0);
     }
     if (score.title === "YAHTZEE" && validateScore(subscore, score.title)) {
       setTotalscore(totalscore + 50);
+      setScoreLock(0);
     }
     if (score.title === "Chance") {
       const subTot = sumArray(subscore);
       setTotalscore(totalscore + subTot);
+      setScoreLock(0);
     }
 
     const newScoreStatus = [
       ...scoreStatus.map((item) => {
         if (item.title === score.title) {
+          setScoreLock(0);
           return { ...item, locked: true };
         } else {
           return item;
@@ -322,12 +343,13 @@ const App: React.FC = () => {
 
   /*Lower section: needs total, total of upper section and grand total*/
   /*Upper section: needs total and added bonus (35) if total > 63*/
-
+  console.log("throws: " + throws);
+  console.log("scoreLock: " + scoreLock);
   return (
     <div className="App">
-      <img src={Yahtzeelogo} alt="logo" style={{ maxWidth: "70vw" }} />
+      <img className="logo" src={Yahtzeelogo} alt="logo" />
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+      <div className="scoreboard">
         {scoreStatus.map((score, index) => {
           return (
             <Score
@@ -335,19 +357,23 @@ const App: React.FC = () => {
               score={score}
               callback={addToTotal}
               subscore={subscore}
+              scoreLock={scoreLock}
+              throws={throws}
             />
           );
         })}
       </div>
-      <p>Grand total:{totalscore}</p>
-      {throws > 0 && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
-          }}
-        >
-          {diceStatus.map((dice) => {
+      <div className="grandtotalcontainer">
+        <h2>GRAND TOTAL:{totalscore}</h2>
+        {throws < 3 && (
+          <Button variant="contained" color="secondary" onClick={rollDice}>
+            Roll the dice
+          </Button>
+        )}
+      </div>
+      <div className="dicecontainer">
+        {throws > 0 &&
+          diceStatus.map((dice) => {
             return (
               <Dice
                 key={Math.random()}
@@ -356,14 +382,7 @@ const App: React.FC = () => {
               />
             );
           })}
-        </div>
-      )}
-
-      {throws < 3 && (
-        <Button variant="contained" onClick={rollDice}>
-          Roll the dice
-        </Button>
-      )}
+      </div>
     </div>
   );
 };
