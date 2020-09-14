@@ -1,0 +1,48 @@
+.App {
+  text-align: center;
+  background-color: goldenrod;
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  max-width: 40vw;
+  height: 22vh;
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 35vh;
+}
+
+.grandtotalcontainer {
+  height: 13vh;
+  margin-bottom: 10px;
+}
+
+.dicecontainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  height: 20vh;
+}
+
+@media only screen and (max-width: 600px) {
+  .logo {
+    max-width: 95vw;
+    height: 20vh;
+  }
+  .grandtotalcontainer {
+    margin-bottom: 40px;
+  }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 1200px) {
+  .logo {
+    max-width: 80vw;
+  }
+}
