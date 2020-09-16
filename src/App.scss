@@ -11,7 +11,22 @@
 
 .logo {
   max-width: 40vw;
-  height: 22vh;
+  height: 20vh;
+}
+
+.rulesYahtzee {
+  position: absolute;
+  background-color: #40e0d0;
+  border-radius: 50px;
+  top: 25vh;
+  line-height: 80%;
+  width: 350px;
+  height: 350px;
+}
+
+.questionmark {
+  width: 20px;
+  margin: 2px 2px 0 0;
 }
 
 .scoreboard {
@@ -22,7 +37,12 @@
 
 .grandtotalcontainer {
   height: 13vh;
-  margin-bottom: 10px;
+  margin: 0 20px 0 20px;
+
+  h2 {
+    border: 1px solid #40e0d0;
+    background-color: #40e0d0;
+  }
 }
 
 .dicecontainer {
@@ -35,6 +55,12 @@
   .logo {
     max-width: 95vw;
     height: 20vh;
+  }
+  .rulesYahtzee {
+    top: 22vh;
+    width: 350px;
+    height: 270px;
+    font-size: 80%;
   }
   .grandtotalcontainer {
     margin-bottom: 40px;

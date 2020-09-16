@@ -18,7 +18,7 @@ export const Dice: React.FC<DiceProps> = (props) => {
         variant="contained"
         // color={props.onedice.locked ? "secondary" : "primary"}
       >
-        {props.onedice.locked ? "Release" : "Keep"}
+        {props.onedice.locked ? "X" : "Keep"}
       </Button>
     </div>
   );

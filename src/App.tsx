@@ -151,6 +151,15 @@ const App: React.FC = () => {
   const [subscore, setSubscore] = useState<number[]>([]);
   const [totalscore, setTotalscore] = useState<number>(0);
   const [scoreLock, setScoreLock] = useState<number>(1);
+  const [gameover, setGameover] = useState<boolean>(false);
+  const [rulesShown, setRulesShown] = useState<boolean>(false);
+
+  const newGame = () => {
+    setGameover(false);
+    setDiceStatus(initialDiceState);
+    setScoreStatus(initialScoreState);
+    setTotalscore(0);
+  };
 
   const rollDice = () => {
     setThrows(throws + 1);
@@ -336,19 +345,21 @@ const App: React.FC = () => {
         }
       }),
     ];
+
     setScoreStatus(newScoreStatus);
     setThrows(0);
     setDiceStatus(initialDiceState);
+
+    if (scoreStatus.filter((score) => score.locked === false).length === 1) {
+      setGameover(true);
+    }
   };
 
   /*Lower section: needs total, total of upper section and grand total*/
   /*Upper section: needs total and added bonus (35) if total > 63*/
-  console.log("throws: " + throws);
-  console.log("scoreLock: " + scoreLock);
   return (
     <div className="App">
       <img className="logo" src={Yahtzeelogo} alt="logo" />
-
       <div className="scoreboard">
         {scoreStatus.map((score, index) => {
           return (
@@ -363,9 +374,39 @@ const App: React.FC = () => {
           );
         })}
       </div>
+      {rulesShown && (
+        <div className="rulesYahtzee">
+          <h2>YAHTZEE rules</h2>
+          <p>Roll the dice three times and pick a score.</p>
+          <h3>Score categories</h3>
+          <p>Ones//sixes: the sum of dice with that particular number </p>
+          <p>
+            Three/four of a kind: at least three/four dice the same (score is
+            sum of all dice)
+          </p>
+          <p>Full house: three of one number and two of another (score 25)</p>
+          <p>Small straight: four sequential dice (score 30) </p>
+          <p>Large straight: five sequential dice (score 40) </p>
+          <p>YAHTZEE: all five dice the same (score 50)</p>
+          <p>Chance: any combination (score is sum of all dice)</p>
+        </div>
+      )}
       <div className="grandtotalcontainer">
-        <h2>GRAND TOTAL:{totalscore}</h2>
-        {throws < 3 && (
+        <h2>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/b/be/%3Fuestionmark_encircled.svg"
+            alt="questionmark"
+            className="questionmark"
+            // onMouseEnter={() => setRulesShown(true)}
+            // onMouseLeave={() => setRulesShown(false)}
+            onClick={() => setRulesShown(!rulesShown)}
+          />
+          GRAND TOTAL:{totalscore}{" "}
+          <Button variant="contained" color="secondary" onClick={newGame}>
+            New game
+          </Button>
+        </h2>
+        {throws >= 3 || gameover ? null : (
           <Button variant="contained" color="secondary" onClick={rollDice}>
             Roll the dice
           </Button>
