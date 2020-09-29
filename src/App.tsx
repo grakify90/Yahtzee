@@ -156,6 +156,7 @@ const App: React.FC = () => {
 
   const newGame = () => {
     setGameover(false);
+    setThrows(0);
     setDiceStatus(initialDiceState);
     setScoreStatus(initialScoreState);
     setTotalscore(0);
