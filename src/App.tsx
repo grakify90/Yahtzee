@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.scss";
 import { Dice } from "./components/Dice";
 import { Score } from "./components/Score";
-import { Button, useScrollTrigger } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import Yahtzeelogo from "./images/YAHTZEE.png";
 import { DiceModel } from "./models/dice.model";
 import { ScoreModel } from "./models/score.model";
