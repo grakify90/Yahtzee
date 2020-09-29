@@ -17,7 +17,7 @@
 .rulesYahtzee {
   position: absolute;
   background-color: #40e0d0;
-  border-radius: 50px;
+  border-radius: 10px;
   top: 25vh;
   line-height: 80%;
   width: 350px;
@@ -56,12 +56,14 @@
     max-width: 95vw;
     height: 20vh;
   }
+
   .rulesYahtzee {
     top: 22vh;
     width: 350px;
     height: 270px;
     font-size: 80%;
   }
+
   .grandtotalcontainer {
     margin-bottom: 40px;
   }

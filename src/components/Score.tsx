@@ -9,6 +9,7 @@ type ScoreProps = {
   callback: (score: ScoreModel, subscore: number[]) => void;
   scoreLock: number;
   throws: number;
+  gameStarted: boolean;
 };
 
 export const Score: React.FC<ScoreProps> = (props) => {
@@ -16,7 +17,7 @@ export const Score: React.FC<ScoreProps> = (props) => {
     <Button
       disabled={props.score.locked}
       onClick={
-        props.scoreLock === 1
+        props.scoreLock === 1 && props.gameStarted && props.throws === 3
           ? props.callback.bind(null, props.score, props.subscore)
           : () => console.log("locked")
       }
