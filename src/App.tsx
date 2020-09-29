@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.scss";
 import { Dice } from "./components/Dice";
 import { Score } from "./components/Score";
-import { Button } from "@material-ui/core";
+import { Button, useScrollTrigger } from "@material-ui/core";
 import Yahtzeelogo from "./images/YAHTZEE.png";
 import { DiceModel } from "./models/dice.model";
 import { ScoreModel } from "./models/score.model";
@@ -143,6 +143,7 @@ const initialScoreState = [
 ];
 
 const App: React.FC = () => {
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [diceStatus, setDiceStatus] = useState<DiceModel[]>(initialDiceState);
   const [scoreStatus, setScoreStatus] = useState<ScoreModel[]>(
     initialScoreState
@@ -163,6 +164,7 @@ const App: React.FC = () => {
   };
 
   const rollDice = () => {
+    setGameStarted(true);
     setThrows(throws + 1);
     const newStatus = [
       ...diceStatus.map((dice) => {
@@ -371,6 +373,7 @@ const App: React.FC = () => {
               subscore={subscore}
               scoreLock={scoreLock}
               throws={throws}
+              gameStarted={gameStarted}
             />
           );
         })}
